@@ -15,10 +15,7 @@
     "dev:api": "turbo dev --filter=@repo/api"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
     "@repo/prettier-config": "workspace:*",
-    "prettier": "^3.2.5",
     "turbo": "latest"
   },
   "packageManager": "pnpm@9.1.3",
