@@ -12,7 +12,7 @@
     "generate:component": "turbo gen react-component",
     "clean": "rm -rf .turbo node_modules",
     "format": "prettier --check ./src --ignore-path ../../.gitignore",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
