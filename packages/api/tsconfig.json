@@ -1,0 +1,9 @@
+{
+  "extends": "@repo/typescript-config/ts-library.json",
+  "compilerOptions": {
+    "incremental": true,
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
