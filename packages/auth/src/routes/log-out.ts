@@ -1,3 +1,6 @@
+import { eq } from "@repo/db";
+import { db } from "@repo/db/client";
+import { RefreshToken } from "@repo/db/schema";
 import { RequestHandler } from "express";
 import { z } from "zod";
 
@@ -14,7 +17,9 @@ export const logOut: RequestHandler = async (req, res) => {
 
   const { refreshToken } = validationResult.data;
 
-  // TODO: Remove the current refreshToken from the DB
+  await db
+    .delete(RefreshToken)
+    .where(eq(RefreshToken.refreshToken, refreshToken));
 
   res.success({ message: "logged out" }, 204);
 };

@@ -1,6 +1,9 @@
 import { RequestHandler } from "express";
 import bcrypt from "bcrypt";
 import { z } from "zod";
+import { db } from "@repo/db/client";
+import { eq } from "@repo/db";
+import { User } from "@repo/db/schema";
 
 const signUpInputSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -18,12 +21,21 @@ export const signUp: RequestHandler = async (req, res) => {
 
   const { email, password } = validationResult.data;
 
-  // TODO: Check email don't already exist
+  const alreadyExistUser = await db.query.User.findFirst({
+    where: eq(User.email, email),
+  });
+
+  if (!!alreadyExistUser) {
+    return res.error(400, "Unauthorized");
+  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = { email, password: hashedPassword };
 
-  // TODO: save user
+  const user = await db
+    .insert(User)
+    .values({ email, role: "customer", password: hashedPassword })
+    .onConflictDoNothing()
+    .returning();
 
-  res.success(user, 201);
+  res.success(user[0], 201);
 };

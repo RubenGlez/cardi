@@ -5,9 +5,11 @@ import { PORT } from "./config";
 import { logIn } from "./routes/log-in";
 import { refreshToken } from "./routes/refresh-token";
 import { healthCheck } from "./routes/health-check";
+import cors from "cors";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(responseFormatter);
 

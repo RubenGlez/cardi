@@ -1,4 +1,5 @@
 import "express";
+import { Redis } from "ioredis";
 
 declare global {
   namespace Express {

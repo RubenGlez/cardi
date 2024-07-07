@@ -3,6 +3,9 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 import { generateAccessToken } from "../utils/generate-access-token";
 import { generateRefreshToken } from "../utils/generate-refresh-token";
+import { db } from "@repo/db/client";
+import { eq } from "@repo/db";
+import { User } from "@repo/db/schema";
 
 const logInInputSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -20,11 +23,14 @@ export const logIn: RequestHandler = async (req, res) => {
 
   const { email, password } = validationResult.data;
 
-  // TODO: Check uses exist (find user)
-  const userFromDb = { id: "userId", password: "" }; // FYI: This is fake
+  const userFromDb = await db.query.User.findFirst({
+    where: eq(User.email, email),
+  });
+  if (!userFromDb) {
+    return res.error(401, "Unauthorized");
+  }
 
   const isPasswordCorrect = await bcrypt.compare(password, userFromDb.password);
-
   if (!isPasswordCorrect) {
     return res.error(401, "Unauthorized");
   }

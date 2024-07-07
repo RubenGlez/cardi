@@ -2,6 +2,9 @@ import { RequestHandler } from "express";
 import { z } from "zod";
 import { generateAccessToken } from "../utils/generate-access-token";
 import { generateRefreshToken } from "../utils/generate-refresh-token";
+import { db } from "@repo/db/client";
+import { RefreshToken } from "@repo/db/schema";
+import { eq } from "@repo/db";
 
 const refreshTokenInputSchema = z.object({
   userId: z.string({ message: "userId is required" }),
@@ -17,12 +20,17 @@ export const refreshToken: RequestHandler = async (req, res) => {
 
   const { userId, refreshToken } = validationResult.data;
 
-  const existRefreshToken = true; // TODO: find the token in DB
+  const existRefreshToken = await db.query.RefreshToken.findFirst({
+    where: eq(RefreshToken.refreshToken, refreshToken),
+  });
   if (!existRefreshToken) {
     return res.error(401, "Unauthorized");
   }
 
-  // TODO: Remove the current refreshToken from the DB
+  await db
+    .delete(RefreshToken)
+    .where(eq(RefreshToken.refreshToken, refreshToken));
+
   const accessToken = generateAccessToken({ id: userId });
   const newRefreshToken = generateRefreshToken({ id: userId });
 

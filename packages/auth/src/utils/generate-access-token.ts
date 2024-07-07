@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { AuthUser } from "../types/user";
+import { AuthUser } from "../types/auth-user";
 import { ACCESS_TOKEN_SECRET } from "../config";
 
 export function generateAccessToken(user: AuthUser) {
