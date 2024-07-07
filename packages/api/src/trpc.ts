@@ -1,21 +1,49 @@
 import { TRPCError, initTRPC } from "@trpc/server";
-import * as trpcExpress from "@trpc/server/adapters/express";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { db } from "@repo/db/client";
 
-export const createTRPCContext = ({
-  req,
-  res,
-}: trpcExpress.CreateExpressContextOptions) => {
-  const header = req.headers.authorization;
-  const token = header?.split(" ")[1];
-  return { req, res, token, db };
+// TODO
+interface Session {
+  accessToken: string;
+  refreshToken: string;
+  userId: string;
+}
+
+/**
+ * 1. CONTEXT
+ *
+ * This section defines the "contexts" that are available in the backend API.
+ *
+ * These allow you to access things when processing a request, like the database, the session, etc.
+ *
+ * This helper generates the "internals" for a tRPC context. The API handler and RSC clients each
+ * wrap this and provides the required context.
+ *
+ * @see https://trpc.io/docs/server/context
+ */
+export const createTRPCContext = (opts: {
+  headers: Headers;
+  session: Session | null;
+}) => {
+  const session = opts.session;
+  const source = opts.headers.get("x-trpc-source") ?? "unknown";
+
+  console.log(">>> tRPC Request from", source, "by", session?.userId);
+
+  return {
+    session,
+    db,
+  };
 };
 
-type Context = Awaited<ReturnType<typeof createTRPCContext>>;
-
-const t = initTRPC.context<Context>().create({
+/**
+ * 2. INITIALIZATION
+ *
+ * This is where the trpc api is initialized, connecting the context and
+ * transformer
+ */
+const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => ({
     ...shape,
@@ -26,18 +54,50 @@ const t = initTRPC.context<Context>().create({
   }),
 });
 
+/**
+ * Create a server-side caller
+ * @see https://trpc.io/docs/server/server-side-calls
+ */
+export const createCallerFactory = t.createCallerFactory;
+
+/**
+ * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
+ *
+ * These are the pieces you use to build your tRPC API. You should import these
+ * a lot in the /src/server/api/routers folder
+ */
+
+/**
+ * This is how you create new routers and subrouters in your tRPC API
+ * @see https://trpc.io/docs/router
+ */
 export const createTRPCRouter = t.router;
 
+/**
+ * Public (unauthed) procedure
+ *
+ * This is the base piece you use to build new queries and mutations on your
+ * tRPC API. It does not guarantee that a user querying is authorized, but you
+ * can still access user session data if they are logged in
+ */
 export const publicProcedure = t.procedure;
 
+/**
+ * Protected (authenticated) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
+ * the session is valid and guarantees `ctx.session.userId` is not null.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.token) {
+  if (!ctx.session?.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
-
-  // here we can add the logic to check that the user is logged in
-  // Check this example: https://karthickragavendran.medium.com/authn-and-authz-with-trpc-dc8021d05710
-  const user = { id: "", name: "ruben" };
-
-  return next({ ctx: { ...ctx, token: ctx.token, user } });
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, userId: ctx.session.userId },
+    },
+  });
 });

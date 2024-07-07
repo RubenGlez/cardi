@@ -1,33 +1,33 @@
-import * as trpcExpress from "@trpc/server/adapters/express";
-import express from "express";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+
+import type { AppRouter } from "./root";
 import { appRouter } from "./root";
-import { createTRPCContext } from "./trpc";
+import { createCallerFactory, createTRPCContext } from "./trpc";
 
-function main() {
-  const app = express();
+/**
+ * Create a server-side caller for the tRPC API
+ * @example
+ * const trpc = createCaller(createContext);
+ * const res = await trpc.post.all();
+ *       ^? Post[]
+ */
+const createCaller = createCallerFactory(appRouter);
 
-  app.use((req, _res, next) => {
-    console.log("⬅️ ", req.method, req.path, req.body ?? req.query);
-    next();
-  });
+/**
+ * Inference helpers for input types
+ * @example
+ * type PostByIdInput = RouterInputs['post']['byId']
+ *      ^? { id: number }
+ **/
+type RouterInputs = inferRouterInputs<AppRouter>;
 
-  app.use(
-    "/trpc",
-    trpcExpress.createExpressMiddleware({
-      router: appRouter,
-      createContext: createTRPCContext,
-    }),
-  );
+/**
+ * Inference helpers for output types
+ * @example
+ * type AllPostsOutput = RouterOutputs['post']['all']
+ *      ^? Post[]
+ **/
+type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-  app.get("/", (req, res) => {
-    res.json({
-      message: "it works!",
-    });
-  });
-
-  app.listen(4000, () => {
-    console.log("🌍 tRPC listening on port 4000");
-  });
-}
-
-void main();
+export { createTRPCContext, appRouter, createCaller };
+export type { AppRouter, RouterInputs, RouterOutputs };
