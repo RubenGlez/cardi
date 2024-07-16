@@ -1,8 +1,9 @@
-import { RequestHandler } from "express";
+import type { RequestHandler } from "express";
 import bcrypt from "bcrypt";
 import { z } from "zod";
-import { db } from "@repo/db/client";
+
 import { eq } from "@repo/db";
+import { db } from "@repo/db/client";
 import { User } from "@repo/db/schema";
 
 const signUpInputSchema = z.object({
@@ -25,7 +26,7 @@ export const signUp: RequestHandler = async (req, res) => {
     where: eq(User.email, email),
   });
 
-  if (!!alreadyExistUser) {
+  if (alreadyExistUser) {
     return res.error(400, "Unauthorized");
   }
 

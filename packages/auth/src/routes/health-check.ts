@@ -1,5 +1,5 @@
-import { RequestHandler } from "express";
+import type { RequestHandler } from "express";
 
-export const healthCheck: RequestHandler = async (req, res) => {
+export const healthCheck: RequestHandler = (req, res) => {
   res.success({ status: "UP!" });
 };

@@ -1,11 +1,12 @@
+import cors from "cors";
 import express from "express";
-import { signUp } from "./routes/sign-up";
+
+import { env } from "../env";
 import { responseFormatter } from "./middleware/response-formatter";
-import { PORT } from "./config";
+import { healthCheck } from "./routes/health-check";
 import { logIn } from "./routes/log-in";
 import { refreshToken } from "./routes/refresh-token";
-import { healthCheck } from "./routes/health-check";
-import cors from "cors";
+import { signUp } from "./routes/sign-up";
 
 const app = express();
 
@@ -19,6 +20,6 @@ app.post("/sign-up", signUp);
 app.post("/log-in", logIn);
 app.post("/refresh-token", refreshToken);
 
-app.listen(PORT, () => {
-  console.log(`🌍 Auth server running on port ${PORT}`);
+app.listen(env.AUTH_API_PORT, () => {
+  console.log(`🌍 Auth server running on port ${env.AUTH_API_PORT}`);
 });

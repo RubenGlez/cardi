@@ -1,10 +1,12 @@
-import { RequestHandler } from "express";
+import type { RequestHandler } from "express";
 import { z } from "zod";
-import { generateAccessToken } from "../utils/generate-access-token";
-import { generateRefreshToken } from "../utils/generate-refresh-token";
+
+import { eq } from "@repo/db";
 import { db } from "@repo/db/client";
 import { RefreshToken } from "@repo/db/schema";
-import { eq } from "@repo/db";
+
+import { generateAccessToken } from "../utils/generate-access-token";
+import { generateRefreshToken } from "../utils/generate-refresh-token";
 
 const refreshTokenInputSchema = z.object({
   userId: z.string({ message: "userId is required" }),

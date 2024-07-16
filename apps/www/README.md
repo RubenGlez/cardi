@@ -1,3 +1,0 @@
-# `www`
-
-Next.js app

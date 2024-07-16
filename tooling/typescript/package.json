@@ -1,17 +1,8 @@
 {
-  "name": "@repo/typescript-config",
-  "version": "0.0.0",
+  "name": "@repo/tsconfig",
   "private": true,
+  "version": "0.1.0",
   "files": [
-    "base.json",
-    "internal-package.json"
-  ],
-  "scripts": {
-    "clean": "rm -rf .turbo node_modules",
-    "format": "prettier --check . --ignore-path ../../.gitignore"
-  },
-  "devDependencies": {
-    "@repo/prettier-config": "workspace:*"
-  },
-  "prettier": "@repo/prettier-config"
+    "*.json"
+  ]
 }

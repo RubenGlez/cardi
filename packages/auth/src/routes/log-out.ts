@@ -1,8 +1,9 @@
+import type { RequestHandler } from "express";
+import { z } from "zod";
+
 import { eq } from "@repo/db";
 import { db } from "@repo/db/client";
 import { RefreshToken } from "@repo/db/schema";
-import { RequestHandler } from "express";
-import { z } from "zod";
 
 const logOutInputSchema = z.object({
   refreshToken: z.string({ message: "refreshToken is required" }),

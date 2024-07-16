@@ -1,12 +1,9 @@
-import { Request, Response, NextFunction } from "express";
-import { ApiResponse, ApiError } from "../types/api-response";
+import type { RequestHandler } from "express";
 
-export const responseFormatter = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  res.success = function <T>(data: T, statusCode = 200): Response {
+import type { ApiError, ApiResponse } from "../types/api-response";
+
+export const responseFormatter: RequestHandler = (req, res, next) => {
+  res.success = function <T>(data: T, statusCode = 200) {
     const response: ApiResponse<T> = {
       status: "success",
       data: data,
@@ -15,7 +12,7 @@ export const responseFormatter = (
     return res.status(statusCode).json(response);
   };
 
-  res.error = function (code, message, details): Response {
+  res.error = function (code, message, details) {
     const error: ApiError = {
       code: code,
       message: message,

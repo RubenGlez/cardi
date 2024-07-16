@@ -1,11 +1,13 @@
-import { RequestHandler } from "express";
+import type { RequestHandler } from "express";
 import bcrypt from "bcrypt";
 import { z } from "zod";
+
+import { eq } from "@repo/db";
+import { db } from "@repo/db/client";
+import { User } from "@repo/db/schema";
+
 import { generateAccessToken } from "../utils/generate-access-token";
 import { generateRefreshToken } from "../utils/generate-refresh-token";
-import { db } from "@repo/db/client";
-import { eq } from "@repo/db";
-import { User } from "@repo/db/schema";
 
 const logInInputSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
