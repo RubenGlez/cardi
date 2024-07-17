@@ -1,40 +1,42 @@
 import type { RequestHandler } from "express";
-import { z } from "zod";
 
-import { eq } from "@repo/db";
-import { db } from "@repo/db/client";
-import { RefreshToken } from "@repo/db/schema";
+import { refreshTokenInputSchema } from "@repo/validators";
 
-import { generateAccessToken } from "../utils/generate-access-token";
-import { generateRefreshToken } from "../utils/generate-refresh-token";
-
-const refreshTokenInputSchema = z.object({
-  userId: z.string({ message: "userId is required" }),
-  refreshToken: z.string({ message: "refreshToken is required" }),
-});
+import { findSessionByRefreshToken } from "../utils/find-session-by-refresh-token";
+import { isRefreshTokenValid } from "../utils/is-refresh-token-valid";
+import { setResponseCookies } from "../utils/set-response-cookies";
+import { updateSessionTokens } from "../utils/update-session-tokens";
 
 export const refreshToken: RequestHandler = async (req, res) => {
-  const validationResult = refreshTokenInputSchema.safeParse(req.body);
+  try {
+    const { success, error, data } = refreshTokenInputSchema.safeParse(
+      req.body,
+    );
 
-  if (!validationResult.success) {
-    return res.error(400, "Validation error", validationResult.error.format());
+    if (!success) {
+      return res.error(400, "Validation error", error.format());
+    }
+
+    const { userId, refreshToken } = data;
+
+    const session = await findSessionByRefreshToken(refreshToken);
+    if (!session) {
+      return res.error(403, "Unauthorized");
+    }
+
+    if (!isRefreshTokenValid(refreshToken)) {
+      return res.error(403, "Unauthorized");
+    }
+
+    const { accessToken, newRefreshToken } = await updateSessionTokens(
+      userId,
+      refreshToken,
+    );
+
+    setResponseCookies(res, accessToken, newRefreshToken);
+
+    res.success({ accessToken, refreshToken: newRefreshToken }, 201);
+  } catch (e) {
+    res.error(500, "Internal Server Error");
   }
-
-  const { userId, refreshToken } = validationResult.data;
-
-  const existRefreshToken = await db.query.RefreshToken.findFirst({
-    where: eq(RefreshToken.refreshToken, refreshToken),
-  });
-  if (!existRefreshToken) {
-    return res.error(401, "Unauthorized");
-  }
-
-  await db
-    .delete(RefreshToken)
-    .where(eq(RefreshToken.refreshToken, refreshToken));
-
-  const accessToken = generateAccessToken({ id: userId });
-  const newRefreshToken = generateRefreshToken({ id: userId });
-
-  res.success({ accessToken, refreshToken: newRefreshToken }, 201);
 };

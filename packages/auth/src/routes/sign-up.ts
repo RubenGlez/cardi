@@ -1,42 +1,28 @@
 import type { RequestHandler } from "express";
-import bcrypt from "bcrypt";
-import { z } from "zod";
 
-import { eq } from "@repo/db";
-import { db } from "@repo/db/client";
-import { User } from "@repo/db/schema";
+import { signUpInputSchema } from "@repo/validators";
 
-const signUpInputSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
-});
+import { createUser } from "../utils/create-user";
+import { isUserAlreadyExist } from "../utils/is-user-already-exist";
 
 export const signUp: RequestHandler = async (req, res) => {
-  const validationResult = signUpInputSchema.safeParse(req.body);
+  try {
+    const { success, error, data } = signUpInputSchema.safeParse(req.body);
 
-  if (!validationResult.success) {
-    return res.error(400, "Validation error", validationResult.error.format());
+    if (!success) {
+      return res.error(400, "Validation error", error.format());
+    }
+
+    const { email, password } = data;
+
+    if (await isUserAlreadyExist(email)) {
+      return res.error(400, "Unauthorized");
+    }
+
+    const user = await createUser(email, password);
+
+    res.success(user, 201);
+  } catch (e) {
+    res.error(500, "Internal Server Error");
   }
-
-  const { email, password } = validationResult.data;
-
-  const alreadyExistUser = await db.query.User.findFirst({
-    where: eq(User.email, email),
-  });
-
-  if (alreadyExistUser) {
-    return res.error(400, "Unauthorized");
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const user = await db
-    .insert(User)
-    .values({ email, role: "customer", password: hashedPassword })
-    .onConflictDoNothing()
-    .returning();
-
-  res.success(user[0], 201);
 };

@@ -1,26 +1,25 @@
 import type { RequestHandler } from "express";
-import { z } from "zod";
 
-import { eq } from "@repo/db";
-import { db } from "@repo/db/client";
-import { RefreshToken } from "@repo/db/schema";
+import { logOutInputSchema } from "@repo/validators";
 
-const logOutInputSchema = z.object({
-  refreshToken: z.string({ message: "refreshToken is required" }),
-});
+import { clearResponseCookies } from "../utils/clear-response-cookies";
+import { deleteSessionByRefreshToken } from "../utils/delete-session-by-refresh-token";
 
 export const logOut: RequestHandler = async (req, res) => {
-  const validationResult = logOutInputSchema.safeParse(req.body);
+  try {
+    const { success, error, data } = logOutInputSchema.safeParse(req.body);
+    if (!success) {
+      return res.error(400, "Validation error", error.format());
+    }
 
-  if (!validationResult.success) {
-    return res.error(400, "Validation error", validationResult.error.format());
+    const { refreshToken } = data;
+
+    await deleteSessionByRefreshToken(refreshToken);
+
+    clearResponseCookies(res);
+
+    res.success({ message: "logged out" }, 204);
+  } catch (error) {
+    res.error(500, "Internal Server Error");
   }
-
-  const { refreshToken } = validationResult.data;
-
-  await db
-    .delete(RefreshToken)
-    .where(eq(RefreshToken.refreshToken, refreshToken));
-
-  res.success({ message: "logged out" }, 204);
 };

@@ -1,44 +1,32 @@
 import type { RequestHandler } from "express";
-import bcrypt from "bcrypt";
-import { z } from "zod";
 
-import { eq } from "@repo/db";
-import { db } from "@repo/db/client";
-import { User } from "@repo/db/schema";
+import { logInInputSchema } from "@repo/validators";
 
-import { generateAccessToken } from "../utils/generate-access-token";
-import { generateRefreshToken } from "../utils/generate-refresh-token";
-
-const logInInputSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
-});
+import { createSession } from "../utils/create-session";
+import { findUserByEmail } from "../utils/find-user-by-email";
+import { isPasswordValid } from "../utils/is-password-valid";
+import { setResponseCookies } from "../utils/set-response-cookies";
 
 export const logIn: RequestHandler = async (req, res) => {
-  const validationResult = logInInputSchema.safeParse(req.body);
+  try {
+    const { success, error, data } = logInInputSchema.safeParse(req.body);
+    if (!success) {
+      return res.error(400, "Validation error", error.format());
+    }
 
-  if (!validationResult.success) {
-    return res.error(400, "Validation error", validationResult.error.format());
+    const { email, password } = data;
+
+    const user = await findUserByEmail(email);
+    if (!user || !(await isPasswordValid(password, user.password))) {
+      return res.error(401, "Unauthorized");
+    }
+
+    const { accessToken, refreshToken } = await createSession(user.id);
+
+    setResponseCookies(res, accessToken, refreshToken);
+
+    res.success({ accessToken, refreshToken });
+  } catch (error) {
+    res.error(500, "Internal Server Error");
   }
-
-  const { email, password } = validationResult.data;
-
-  const userFromDb = await db.query.User.findFirst({
-    where: eq(User.email, email),
-  });
-  if (!userFromDb) {
-    return res.error(401, "Unauthorized");
-  }
-
-  const isPasswordCorrect = await bcrypt.compare(password, userFromDb.password);
-  if (!isPasswordCorrect) {
-    return res.error(401, "Unauthorized");
-  }
-
-  const accessToken = generateAccessToken({ id: userFromDb.id });
-  const refreshToken = generateRefreshToken({ id: userFromDb.id });
-
-  res.success({ accessToken, refreshToken });
 };
