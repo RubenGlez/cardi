@@ -1,7 +1,7 @@
 import cors from "cors";
 import express from "express";
 
-import { env } from "../env";
+import { env } from "./env";
 import { responseFormatter } from "./middleware/response-formatter";
 import { healthCheck } from "./routes/health-check";
 import { logIn } from "./routes/log-in";
