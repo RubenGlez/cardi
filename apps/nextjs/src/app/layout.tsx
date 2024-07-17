@@ -10,13 +10,13 @@ import "~/app/globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("http://localhost:3000"),
-  title: "Create T3 Turbo",
+  title: "Create Next App",
   description: "Simple monorepo with shared backend for web & mobile apps",
   openGraph: {
-    title: "Create T3 Turbo",
+    title: "Create Next App",
     description: "Simple monorepo with shared backend for web & mobile apps",
     url: "http://localhost:3000",
-    siteName: "Create T3 Turbo",
+    siteName: "Create Next App",
   },
   twitter: {
     card: "summary_large_image",

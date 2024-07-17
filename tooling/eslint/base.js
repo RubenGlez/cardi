@@ -5,7 +5,7 @@ import importPlugin from "eslint-plugin-import";
 import tseslint from "typescript-eslint";
 
 /**
- * All packages that leverage t3-env should use this rule
+ * Ensure validated types in env variables
  */
 export const restrictEnvAccess = tseslint.config({
   files: ["**/*.js", "**/*.ts", "**/*.tsx"],
