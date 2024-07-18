@@ -1,5 +1,5 @@
 import { db } from "@repo/db/client";
-import { Session } from "@repo/db/schema";
+import { sessions } from "@repo/db/schema";
 
 import { generateAccessToken } from "./generate-access-token";
 import { generateRefreshToken } from "./generate-refresh-token";
@@ -9,7 +9,7 @@ export const createSession = async (userId: string) => {
   const refreshToken = generateRefreshToken({ id: userId });
 
   await db
-    .insert(Session)
+    .insert(sessions)
     .values({ accessToken, refreshToken, userId })
     .onConflictDoNothing();
 

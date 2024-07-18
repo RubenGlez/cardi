@@ -1,25 +1,25 @@
 import type { RequestHandler } from "express";
 
-import { signUpInputSchema } from "@repo/validators";
+import { signupSchema } from "@repo/db/schema";
 
 import { createUser } from "../utils/create-user";
 import { isUserAlreadyExist } from "../utils/is-user-already-exist";
 
 export const signUp: RequestHandler = async (req, res) => {
   try {
-    const { success, error, data } = signUpInputSchema.safeParse(req.body);
+    const { success, error, data } = signupSchema.safeParse(req.body);
 
     if (!success) {
       return res.error(400, "Validation error", error.format());
     }
 
-    const { email, password } = data;
+    const { email, password, role } = data;
 
     if (await isUserAlreadyExist(email)) {
       return res.error(400, "Unauthorized");
     }
 
-    const user = await createUser(email, password);
+    const user = await createUser({ email, password, role });
 
     res.success(user, 201);
   } catch (e) {

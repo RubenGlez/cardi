@@ -1,13 +1,13 @@
 import type { RequestHandler } from "express";
 
-import { logOutInputSchema } from "@repo/validators";
+import { logoutSchema } from "@repo/db/schema";
 
 import { clearResponseCookies } from "../utils/clear-response-cookies";
 import { deleteSessionByRefreshToken } from "../utils/delete-session-by-refresh-token";
 
 export const logOut: RequestHandler = async (req, res) => {
   try {
-    const { success, error, data } = logOutInputSchema.safeParse(req.body);
+    const { success, error, data } = logoutSchema.safeParse(req.body);
     if (!success) {
       return res.error(400, "Validation error", error.format());
     }

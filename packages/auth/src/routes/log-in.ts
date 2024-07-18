@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { logInInputSchema } from "@repo/validators";
+import { loginSchema } from "@repo/db/schema";
 
 import { createSession } from "../utils/create-session";
 import { findUserByEmail } from "../utils/find-user-by-email";
@@ -9,7 +9,7 @@ import { setResponseCookies } from "../utils/set-response-cookies";
 
 export const logIn: RequestHandler = async (req, res) => {
   try {
-    const { success, error, data } = logInInputSchema.safeParse(req.body);
+    const { success, error, data } = loginSchema.safeParse(req.body);
     if (!success) {
       return res.error(400, "Validation error", error.format());
     }
@@ -23,9 +23,9 @@ export const logIn: RequestHandler = async (req, res) => {
 
     const { accessToken, refreshToken } = await createSession(user.id);
 
-    setResponseCookies(res, accessToken, refreshToken);
+    setResponseCookies(res, refreshToken);
 
-    res.success({ accessToken, refreshToken });
+    res.success({ accessToken });
   } catch (error) {
     res.error(500, "Internal Server Error");
   }

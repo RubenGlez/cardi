@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { refreshTokenInputSchema } from "@repo/validators";
+import { refreshTokenSchema } from "@repo/db/schema";
 
 import { findSessionByRefreshToken } from "../utils/find-session-by-refresh-token";
 import { isRefreshTokenValid } from "../utils/is-refresh-token-valid";
@@ -9,9 +9,7 @@ import { updateSessionTokens } from "../utils/update-session-tokens";
 
 export const refreshToken: RequestHandler = async (req, res) => {
   try {
-    const { success, error, data } = refreshTokenInputSchema.safeParse(
-      req.body,
-    );
+    const { success, error, data } = refreshTokenSchema.safeParse(req.body);
 
     if (!success) {
       return res.error(400, "Validation error", error.format());
@@ -28,14 +26,14 @@ export const refreshToken: RequestHandler = async (req, res) => {
       return res.error(403, "Unauthorized");
     }
 
-    const { accessToken, newRefreshToken } = await updateSessionTokens(
+    const { accessToken, newRefreshToken } = await updateSessionTokens({
       userId,
       refreshToken,
-    );
+    });
 
-    setResponseCookies(res, accessToken, newRefreshToken);
+    setResponseCookies(res, newRefreshToken);
 
-    res.success({ accessToken, refreshToken: newRefreshToken }, 201);
+    res.success({ accessToken }, 201);
   } catch (e) {
     res.error(500, "Internal Server Error");
   }

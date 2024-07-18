@@ -1,16 +1,9 @@
-import type { CookieOptions, Response } from "express";
+import type { Response } from "express";
 
-export const setResponseCookies = (
-  res: Response,
-  accessToken: string,
-  refreshToken: string,
-) => {
-  const cookieOptions: CookieOptions = {
+export const setResponseCookies = (res: Response, refreshToken: string) => {
+  res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
     sameSite: "strict",
-  };
-
-  res.cookie("accessToken", accessToken, cookieOptions);
-  res.cookie("refreshToken", refreshToken, cookieOptions);
+  });
 };
