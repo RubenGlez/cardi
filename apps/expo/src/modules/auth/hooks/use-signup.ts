@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import type { signupSchema } from "@repo/db/schema";
 
-import { getAuthApiUrl } from "~/utils/get-base-url";
+import { getAuthApiUrl } from "~/utils/get-auth-api-url";
 
 export const useSignup = () => {
   const mutation = useMutation({
@@ -13,6 +13,7 @@ export const useSignup = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-trpc-source": String(process.env.AUTH_API_MOBILE_SOURCE),
         },
         body: JSON.stringify(values),
       });

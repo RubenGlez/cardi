@@ -10,6 +10,8 @@ const envSchema = z.object({
     }),
   AUTH_API_ACCESS_TOKEN_SECRET: z.string(),
   AUTH_API_REFRESH_TOKEN_SECRET: z.string(),
+  AUTH_API_MOBILE_SOURCE: z.string(),
+  AUTH_API_WEB_SOURCE: z.string(),
 });
 
 // eslint-disable-next-line no-restricted-properties

@@ -4,6 +4,7 @@ import { loginSchema } from "@repo/db/schema";
 
 import { createSession } from "../utils/create-session";
 import { findUserByEmail } from "../utils/find-user-by-email";
+import { isFromMobile } from "../utils/is-from-mobile";
 import { isPasswordValid } from "../utils/is-password-valid";
 import { setResponseCookies } from "../utils/set-response-cookies";
 
@@ -23,9 +24,14 @@ export const logIn: RequestHandler = async (req, res) => {
 
     const { accessToken, refreshToken } = await createSession(user.id);
 
-    setResponseCookies(res, refreshToken);
+    const isMobile = isFromMobile(req);
 
-    res.success({ accessToken });
+    if (isMobile) {
+      res.success({ accessToken, refreshToken });
+    } else {
+      setResponseCookies(res, refreshToken);
+      res.success({ accessToken });
+    }
   } catch (error) {
     res.error(500, "Internal Server Error");
   }

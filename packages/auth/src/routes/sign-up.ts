@@ -21,7 +21,7 @@ export const signUp: RequestHandler = async (req, res) => {
 
     const user = await createUser({ email, password, role });
 
-    res.success(user, 201);
+    res.success(user);
   } catch (e) {
     res.error(500, "Internal Server Error");
   }

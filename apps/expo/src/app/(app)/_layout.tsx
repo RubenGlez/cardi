@@ -1,18 +1,22 @@
-import { Text } from "react-native";
+import { ActivityIndicator } from "react-native";
 import { Redirect, Stack } from "expo-router";
 
-import { useStorageState } from "~/utils/use-storage-state";
+import { useSession } from "~/modules/auth/hooks/useSession";
 
 export default function AppLayout() {
-  const [[session, isLoading]] = useStorageState("session");
+  const { isLoading, session } = useSession();
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <ActivityIndicator />;
   }
 
-  if (!session) {
+  if (!session.accessToken) {
     return <Redirect href="/log-in" />;
   }
 
-  return <Stack />;
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
+  );
 }

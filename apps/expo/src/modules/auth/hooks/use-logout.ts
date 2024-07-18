@@ -1,19 +1,20 @@
-import type { z } from "zod";
+import { router } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 
-import type { logoutSchema } from "@repo/db/schema";
-
-import { getAuthApiUrl } from "~/utils/get-base-url";
+import { getAuthApiUrl } from "~/utils/get-auth-api-url";
+import { useSession } from "./useSession";
 
 export const useLogout = () => {
+  const { setSession } = useSession();
+
   const mutation = useMutation({
-    mutationFn: async (values: z.infer<typeof logoutSchema>) => {
+    mutationFn: async () => {
       const response = await fetch(`${getAuthApiUrl()}/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-trpc-source": String(process.env.AUTH_API_MOBILE_SOURCE),
         },
-        body: JSON.stringify(values),
       });
 
       if (!response.ok) {
@@ -21,6 +22,11 @@ export const useLogout = () => {
       }
 
       return response.json();
+    },
+    onSuccess() {
+      setSession(null, () => {
+        router.push("/log-in");
+      });
     },
   });
 

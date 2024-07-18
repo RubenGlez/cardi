@@ -1,7 +1,10 @@
 import * as React from "react";
 import * as SecureStore from "expo-secure-store";
 
-type UseStateHook<T> = [[boolean, T | null], (value: T | null) => void];
+type UseStateHook<T> = [
+  [boolean, T | null],
+  (value: T | null, callback?: () => void) => void,
+];
 
 function useAsyncState<T>(
   initialValue: [boolean, T | null] = [true, null],
@@ -15,7 +18,7 @@ function useAsyncState<T>(
   ) as UseStateHook<T>;
 }
 
-export async function setStorageItemAsync(key: string, value: string | null) {
+async function setStorageItemAsync(key: string, value: string | null) {
   if (value == null) {
     await SecureStore.deleteItemAsync(key);
   } else {
@@ -23,7 +26,7 @@ export async function setStorageItemAsync(key: string, value: string | null) {
   }
 }
 
-export function useStorageState(key: string): UseStateHook<string> {
+export function useSecureStore(key: string): UseStateHook<string> {
   const [state, setState] = useAsyncState<string>();
 
   React.useEffect(() => {
@@ -37,9 +40,10 @@ export function useStorageState(key: string): UseStateHook<string> {
   }, [key, setState]);
 
   const setValue = React.useCallback(
-    async (value: string | null) => {
+    async (value: string | null, callback?: () => void) => {
       setState(value);
       await setStorageItemAsync(key, value);
+      callback?.();
     },
     [key, setState],
   );

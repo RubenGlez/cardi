@@ -1,17 +1,21 @@
 import type { z } from "zod";
+import { router } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 
 import type { loginSchema } from "@repo/db/schema";
 
-import { getAuthApiUrl } from "~/utils/get-base-url";
-import { useStorageState } from "~/utils/use-storage-state";
+import { getAuthApiUrl } from "~/utils/get-auth-api-url";
+import { useSession } from "./useSession";
 
-interface PayloadResponse {
-  accessToken: string;
+interface LoginResponse {
+  data: {
+    accessToken: string;
+    refreshToken: string;
+  };
 }
 
 export const useLogin = () => {
-  const [_, setSession] = useStorageState("session");
+  const { setSession } = useSession();
 
   const mutation = useMutation({
     mutationFn: async (values: z.infer<typeof loginSchema>) => {
@@ -19,6 +23,7 @@ export const useLogin = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-trpc-source": String(process.env.AUTH_API_MOBILE_SOURCE),
         },
         body: JSON.stringify(values),
       });
@@ -29,8 +34,10 @@ export const useLogin = () => {
 
       return response.json();
     },
-    onSuccess(values: PayloadResponse) {
-      setSession(values.accessToken);
+    onSuccess(values: LoginResponse) {
+      setSession(values.data, () => {
+        router.push("/");
+      });
     },
   });
 
