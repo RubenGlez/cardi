@@ -10,18 +10,18 @@ import "~/app/globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("http://localhost:3000"),
-  title: "Create Next App",
+  title: "Cardi",
   description: "Simple monorepo with shared backend for web & mobile apps",
   openGraph: {
-    title: "Create Next App",
+    title: "Cardi",
     description: "Simple monorepo with shared backend for web & mobile apps",
     url: "http://localhost:3000",
-    siteName: "Create Next App",
+    siteName: "Cardi",
   },
   twitter: {
     card: "summary_large_image",
-    site: "@jullerino",
-    creator: "@jullerino",
+    site: "@iamrubenglez",
+    creator: "@iamrubenglez",
   },
 };
 

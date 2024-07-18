@@ -275,9 +275,6 @@ importers:
       cors:
         specifier: ^2.8.5
         version: 2.8.5
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
       express:
         specifier: ^4.19.2
         version: 4.19.2
@@ -312,6 +309,9 @@ importers:
       '@types/node':
         specifier: ^20.14.11
         version: 20.14.11
+      dotenv-cli:
+        specifier: ^7.4.2
+        version: 7.4.2
       eslint:
         specifier: ^9.2.0
         version: 9.7.0
@@ -327,9 +327,6 @@ importers:
 
   packages/db:
     dependencies:
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
       drizzle-orm:
         specifier: ^0.30.10
         version: 0.30.10(@neondatabase/serverless@0.7.2)(@types/pg@8.6.6)(@types/react@18.3.3)(@vercel/postgres@0.8.0)(postgres@3.4.4)(react@18.3.1)

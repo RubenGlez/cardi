@@ -1,13 +1,4 @@
-import path from "path";
-import { fileURLToPath } from "url";
-import dotenv from "dotenv";
 import { z } from "zod";
-
-const filename = fileURLToPath(import.meta.url);
-const dirname = path.dirname(filename);
-
-const envPath = path.resolve(dirname, "../../../.env");
-dotenv.config({ path: envPath });
 
 const envSchema = z.object({
   POSTGRES_URL: z.string().url(),
