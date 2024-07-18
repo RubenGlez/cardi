@@ -248,6 +248,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - ExpoSecureStore (13.0.2):
+    - ExpoModulesCore
   - EXSplashScreen (0.27.5):
     - DoubleConversion
     - ExpoModulesCore
@@ -1523,6 +1525,7 @@ DEPENDENCIES:
   - "ExpoHead (from `../../../node_modules/.pnpm/expo-router@3.5.18_hoqwxueopibsnc3s53k22yi4jq/node_modules/expo-router/ios`)"
   - "ExpoKeepAwake (from `../../../node_modules/.pnpm/expo-keep-awake@13.0.2_expo@51.0.20_@babel+core@7.24.9_@babel+preset-env@7.24.8_@babel+core@7.24.9__bufferutil@4.0.8_/node_modules/expo-keep-awake/ios`)"
   - "ExpoModulesCore (from `../../../node_modules/.pnpm/expo-modules-core@1.12.19/node_modules/expo-modules-core`)"
+  - "ExpoSecureStore (from `../../../node_modules/.pnpm/expo-secure-store@13.0.2_expo@51.0.20_@babel+core@7.24.9_@babel+preset-env@7.24.8_@babel+core@7.24.9__bufferutil@4.0.8_/node_modules/expo-secure-store/ios`)"
   - "EXSplashScreen (from `../../../node_modules/.pnpm/expo-splash-screen@0.27.5_expo-modules-autolinking@1.11.1_expo@51.0.20_@babel+core@7.24.9_@ba_lhpnlwcb5j366oibezsdyy6dom/node_modules/expo-splash-screen/ios`)"
   - "EXUpdatesInterface (from `../../../node_modules/.pnpm/expo-updates-interface@0.16.2_expo@51.0.20_@babel+core@7.24.9_@babel+preset-env@7.24.8_@babel_x5i5dz4aaa4vbkm3pncq7e5dsm/node_modules/expo-updates-interface/ios`)"
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -1622,6 +1625,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/.pnpm/expo-keep-awake@13.0.2_expo@51.0.20_@babel+core@7.24.9_@babel+preset-env@7.24.8_@babel+core@7.24.9__bufferutil@4.0.8_/node_modules/expo-keep-awake/ios"
   ExpoModulesCore:
     :path: "../../../node_modules/.pnpm/expo-modules-core@1.12.19/node_modules/expo-modules-core"
+  ExpoSecureStore:
+    :path: "../../../node_modules/.pnpm/expo-secure-store@13.0.2_expo@51.0.20_@babel+core@7.24.9_@babel+preset-env@7.24.8_@babel+core@7.24.9__bufferutil@4.0.8_/node_modules/expo-secure-store/ios"
   EXSplashScreen:
     :path: "../../../node_modules/.pnpm/expo-splash-screen@0.27.5_expo-modules-autolinking@1.11.1_expo@51.0.20_@babel+core@7.24.9_@ba_lhpnlwcb5j366oibezsdyy6dom/node_modules/expo-splash-screen/ios"
   EXUpdatesInterface:
@@ -1759,6 +1764,7 @@ SPEC CHECKSUMS:
   ExpoHead: 7880300d9c1519420530cf591d333d3f96ff9f6e
   ExpoKeepAwake: 3b8815d9dd1d419ee474df004021c69fdd316d08
   ExpoModulesCore: 734c1802786b23c9598f4d15273753a779969368
+  ExpoSecureStore: 060cebcb956b80ddae09821610ac1aa9e1ac74cd
   EXSplashScreen: fbf0ec78e9cee911df188bf17b4fe51d15a84b87
   EXUpdatesInterface: 996527fd7d1a5d271eb523258d603f8f92038f24
   FBLazyVector: 7e977dd099937dc5458851233141583abba49ff2

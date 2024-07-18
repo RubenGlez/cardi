@@ -23,6 +23,7 @@ export const responseFormatter: RequestHandler = (req, res, next) => {
       data: null,
       error: error,
     };
+
     return res.status(code).json(response);
   };
 

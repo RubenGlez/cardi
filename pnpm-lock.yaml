@@ -32,6 +32,9 @@ importers:
       '@expo/metro-config':
         specifier: ^0.18.3
         version: 0.18.8
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@shopify/flash-list':
         specifier: 1.6.4
         version: 1.6.4(@babel/runtime@7.24.8)(react-native@0.74.3(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1))(react@18.3.1)
@@ -62,6 +65,9 @@ importers:
       expo-router:
         specifier: ~3.5.11
         version: 3.5.18(hoqwxueopibsnc3s53k22yi4jq)
+      expo-secure-store:
+        specifier: ~13.0.2
+        version: 13.0.2(expo@51.0.20(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9))(bufferutil@4.0.8))
       expo-splash-screen:
         specifier: ~0.27.4
         version: 0.27.5(expo-modules-autolinking@1.11.1)(expo@51.0.20(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9))(bufferutil@4.0.8))
@@ -98,6 +104,9 @@ importers:
       superjson:
         specifier: 2.2.1
         version: 2.2.1
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       '@babel/core':
         specifier: ^7.24.5
@@ -266,9 +275,6 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../db
-      '@repo/validators':
-        specifier: workspace:*
-        version: link:../validators
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1
@@ -483,9 +489,6 @@ importers:
       eslint-plugin-react-hooks:
         specifier: beta
         version: 5.1.0-beta-26f2496093-20240514(eslint@9.7.0)
-      eslint-plugin-unused-imports:
-        specifier: ^4.0.0
-        version: 4.0.0(eslint@9.7.0)
       typescript-eslint:
         specifier: ^7.8.0
         version: 7.16.1(eslint@9.7.0)(typescript@5.5.3)
@@ -3964,20 +3967,6 @@ packages:
     peerDependencies:
       eslint: '>6.6.0'
 
-  eslint-plugin-unused-imports@4.0.0:
-    resolution: {integrity: sha512-mzM+y2B7XYpQryVa1usT+Y/BdNAtAZiXzwpSyDCboFoJN/LZRN67TNvQxKtuTK/Aplya3sLNQforiubzPPaIcQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      '@typescript-eslint/eslint-plugin': '8'
-      eslint: '9'
-    peerDependenciesMeta:
-      '@typescript-eslint/eslint-plugin':
-        optional: true
-
-  eslint-rule-composer@0.3.0:
-    resolution: {integrity: sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==}
-    engines: {node: '>=4.0.0'}
-
   eslint-scope@8.0.2:
     resolution: {integrity: sha512-6E4xmrTw5wtxnLA5wYL3WDfhZ/1bUBGOXV0zQvVRDOtrR8D0p6W7fs3JweNYhwRYeGvd/1CKX2se0/2s7Q/nJA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -4128,6 +4117,11 @@ packages:
         optional: true
       react-native-reanimated:
         optional: true
+
+  expo-secure-store@13.0.2:
+    resolution: {integrity: sha512-3QYgoneo8p8yeeBPBiAfokNNc2xq6+n8+Ob4fAlErEcf4H7Y72LH+K/dx0nQyWau2ZKZUXBxyyfuHFyVKrEVLg==}
+    peerDependencies:
+      expo: '*'
 
   expo-splash-screen@0.27.5:
     resolution: {integrity: sha512-9rdZuLkFCfgJBxrheUsOEOIW6Rp+9NVlpSE0hgXQwbTCLTncf00IHSE8/L2NbFyeDLNjof1yZBppaV7tXHRUzA==}
@@ -11521,13 +11515,6 @@ snapshots:
       dotenv: 16.0.3
       eslint: 9.7.0
 
-  eslint-plugin-unused-imports@4.0.0(eslint@9.7.0):
-    dependencies:
-      eslint: 9.7.0
-      eslint-rule-composer: 0.3.0
-
-  eslint-rule-composer@0.3.0: {}
-
   eslint-scope@8.0.2:
     dependencies:
       esrecurse: 4.3.0
@@ -11754,6 +11741,10 @@ snapshots:
       - react-native
       - supports-color
       - typescript
+
+  expo-secure-store@13.0.2(expo@51.0.20(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9))(bufferutil@4.0.8)):
+    dependencies:
+      expo: 51.0.20(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9))(bufferutil@4.0.8)
 
   expo-splash-screen@0.27.5(expo-modules-autolinking@1.11.1)(expo@51.0.20(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9))(bufferutil@4.0.8)):
     dependencies:
