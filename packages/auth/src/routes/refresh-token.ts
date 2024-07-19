@@ -5,42 +5,50 @@ import { refreshTokenSchema } from "@repo/db/schema";
 import { findSessionByRefreshToken } from "../utils/find-session-by-refresh-token";
 import { isFromMobile } from "../utils/is-from-mobile";
 import { isRefreshTokenValid } from "../utils/is-refresh-token-valid";
-import { setResponseCookies } from "../utils/set-response-cookies";
 import { updateSessionTokens } from "../utils/update-session-tokens";
 
 export const refreshToken: RequestHandler = async (req, res) => {
-  const isMobile = isFromMobile(req);
-
   try {
+    const isMobile = isFromMobile(req);
+
+    // Validate the request body
     const { success, error, data } = refreshTokenSchema.safeParse(req.body);
 
     if (!success) {
-      return res.error(400, "Validation error", error.format());
+      return res
+        .status(400)
+        .json({ error: "Validation Error", details: error.format() });
     }
 
     const { userId, refreshToken } = data;
 
+    // Find the session by refresh token
     const session = await findSessionByRefreshToken(refreshToken);
-    if (!session) {
-      return res.error(403, "Unauthorized");
+    if (!session || !isRefreshTokenValid(refreshToken)) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    if (!isRefreshTokenValid(refreshToken)) {
-      return res.error(403, "Unauthorized");
-    }
-
+    // Update session tokens
     const { accessToken, newRefreshToken } = await updateSessionTokens({
       userId,
       refreshToken,
     });
 
+    // Send response based on the device type
     if (isMobile) {
-      res.success({ accessToken, refreshToken: newRefreshToken });
+      return res
+        .status(200)
+        .json({ accessToken, refreshToken: newRefreshToken });
     } else {
-      setResponseCookies(res, newRefreshToken);
-      res.success({ accessToken });
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+      });
+      return res.status(200).json({ accessToken });
     }
-  } catch (e) {
-    res.error(500, "Internal Server Error");
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };

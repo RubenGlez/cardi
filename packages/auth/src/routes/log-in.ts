@@ -6,33 +6,43 @@ import { createSession } from "../utils/create-session";
 import { findUserByEmail } from "../utils/find-user-by-email";
 import { isFromMobile } from "../utils/is-from-mobile";
 import { isPasswordValid } from "../utils/is-password-valid";
-import { setResponseCookies } from "../utils/set-response-cookies";
 
 export const logIn: RequestHandler = async (req, res) => {
   try {
+    const isMobile = isFromMobile(req);
+
+    // Validate the request body
     const { success, error, data } = loginSchema.safeParse(req.body);
     if (!success) {
-      return res.error(400, "Validation error", error.format());
+      return res
+        .status(400)
+        .json({ error: "Validation Error", details: error.format() });
     }
 
     const { email, password } = data;
 
+    // Find the user by email
     const user = await findUserByEmail(email);
     if (!user || !(await isPasswordValid(password, user.password))) {
-      return res.error(401, "Unauthorized");
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
+    // Create session and generate tokens
     const { accessToken, refreshToken } = await createSession(user.id);
 
-    const isMobile = isFromMobile(req);
-
+    // Send response based on the device type
     if (isMobile) {
-      res.success({ accessToken, refreshToken });
+      return res.status(200).json({ accessToken, refreshToken });
     } else {
-      setResponseCookies(res, refreshToken);
-      res.success({ accessToken });
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+      });
+      return res.status(200).json({ accessToken });
     }
   } catch (error) {
-    res.error(500, "Internal Server Error");
+    console.error(error); // Log the error for debugging
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };

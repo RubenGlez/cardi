@@ -5,7 +5,7 @@ import { getAuthApiUrl } from "~/utils/get-auth-api-url";
 import { useSession } from "./useSession";
 
 export const useLogout = () => {
-  const { setSession } = useSession();
+  const { session, setSession } = useSession();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -13,7 +13,8 @@ export const useLogout = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-trpc-source": String(process.env.AUTH_API_MOBILE_SOURCE),
+          "x-client-source": "AUTH_API_MOBILE_SOURCE",
+          "x-refresh-token": String(session.refreshToken),
         },
       });
 

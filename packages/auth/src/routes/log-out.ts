@@ -2,39 +2,35 @@ import type { RequestHandler } from "express";
 
 import { logoutSchema } from "@repo/db/schema";
 
-import { clearResponseCookies } from "../utils/clear-response-cookies";
 import { deleteSessionByRefreshToken } from "../utils/delete-session-by-refresh-token";
-import { isFromMobile } from "../utils/is-from-mobile";
-
-interface Cookies {
-  refreshToken?: string;
-}
+import { getTokens } from "../utils/get-tokens";
 
 export const logOut: RequestHandler = async (req, res) => {
-  const isMobile = isFromMobile(req);
-
-  const tokenFromCookies = String(
-    (req.cookies as Cookies | undefined)?.refreshToken,
-  );
-  const tokenFromBody = String((req.body as Cookies | undefined)?.refreshToken);
-  const refreshToken = isMobile ? tokenFromBody : tokenFromCookies;
-
   try {
-    const { success, error, data } = logoutSchema.safeParse({
-      refreshToken,
-    });
+    const { refreshToken } = getTokens(req);
+
+    // Validate the refresh token
+    const { success, error, data } = logoutSchema.safeParse({ refreshToken });
     if (!success) {
-      return res.error(400, "Validation error", error.format());
+      return res
+        .status(400)
+        .json({ error: "Validation Error", details: error.format() });
     }
 
+    // Delete the session associated with the refresh token
     await deleteSessionByRefreshToken(data.refreshToken);
 
-    if (!isMobile) {
-      clearResponseCookies(res);
-    }
+    // Clear the refresh token cookie
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    });
 
-    res.success({ message: "logged out" });
+    // Respond with a success message
+    return res.status(200).json({ message: "Logout done" });
   } catch (error) {
-    res.error(500, "Internal Server Error");
+    console.error(error); // Log the error for debugging
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };

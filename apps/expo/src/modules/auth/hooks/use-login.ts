@@ -4,15 +4,9 @@ import { useMutation } from "@tanstack/react-query";
 
 import type { loginSchema } from "@repo/db/schema";
 
+import type { Session } from "./useSession";
 import { getAuthApiUrl } from "~/utils/get-auth-api-url";
 import { useSession } from "./useSession";
-
-interface LoginResponse {
-  data: {
-    accessToken: string;
-    refreshToken: string;
-  };
-}
 
 export const useLogin = () => {
   const { setSession } = useSession();
@@ -23,7 +17,7 @@ export const useLogin = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-trpc-source": String(process.env.AUTH_API_MOBILE_SOURCE),
+          "x-client-source": "AUTH_API_MOBILE_SOURCE",
         },
         body: JSON.stringify(values),
       });
@@ -32,10 +26,11 @@ export const useLogin = () => {
         throw new Error("Error logging in");
       }
 
-      return response.json();
+      const res = response.json();
+      return res;
     },
-    onSuccess(values: LoginResponse) {
-      setSession(values.data, () => {
+    onSuccess(values: Session) {
+      setSession(values, () => {
         router.push("/");
       });
     },

@@ -1,9 +1,9 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 
 import { env } from "./env";
 import { loggerMiddleware } from "./middleware/logger";
-import { responseFormatter } from "./middleware/response-formatter";
 import { healthCheck } from "./routes/health-check";
 import { logIn } from "./routes/log-in";
 import { logOut } from "./routes/log-out";
@@ -12,9 +12,9 @@ import { signUp } from "./routes/sign-up";
 
 const app = express();
 
+app.use(cookieParser());
 app.use(cors());
 app.use(express.json());
-app.use(responseFormatter);
 app.use(loggerMiddleware);
 
 // Routes

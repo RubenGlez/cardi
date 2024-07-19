@@ -5,7 +5,7 @@ import { useSecureStore } from "~/utils/use-secure-store";
 const accessTokenKey = "access_token";
 const refreshTokenKey = "refresh_token";
 
-interface Session {
+export interface Session {
   accessToken: string;
   refreshToken: string;
 }
@@ -34,5 +34,11 @@ export const useSession = () => {
     [setAccessToken, setRefreshToken],
   );
 
-  return { isLoading, session, setSession };
+  const clearSession = useCallback(() => {
+    setAccessToken(null, () => {
+      setRefreshToken(null);
+    });
+  }, [setAccessToken, setRefreshToken]);
+
+  return { isLoading, session, setSession, clearSession };
 };

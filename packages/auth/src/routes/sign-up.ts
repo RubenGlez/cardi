@@ -7,22 +7,31 @@ import { isUserAlreadyExist } from "../utils/is-user-already-exist";
 
 export const signUp: RequestHandler = async (req, res) => {
   try {
+    // Validate the request body
     const { success, error, data } = signupSchema.safeParse(req.body);
 
     if (!success) {
-      return res.error(400, "Validation error", error.format());
+      return res
+        .status(400)
+        .json({ error: "Validation Error", details: error.format() });
     }
 
     const { email, password, role } = data;
 
+    // Check if the user already exists
     if (await isUserAlreadyExist(email)) {
-      return res.error(400, "Unauthorized");
+      return res
+        .status(409)
+        .json({ error: "Conflict", message: "User already exists" });
     }
 
-    const user = await createUser({ email, password, role });
+    // Create a new user
+    await createUser({ email, password, role });
 
-    res.success(user);
-  } catch (e) {
-    res.error(500, "Internal Server Error");
+    // Respond with a success message
+    return res.status(201).json({ message: "User created" });
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };

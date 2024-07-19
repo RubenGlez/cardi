@@ -13,7 +13,7 @@ export const useSignup = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-trpc-source": String(process.env.AUTH_API_MOBILE_SOURCE),
+          "x-client-source": "AUTH_API_MOBILE_SOURCE",
         },
         body: JSON.stringify(values),
       });

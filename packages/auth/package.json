@@ -24,6 +24,7 @@
   "dependencies": {
     "@repo/db": "workspace:*",
     "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
@@ -34,15 +35,16 @@
     "@repo/prettier-config": "workspace:*",
     "@repo/tsconfig": "workspace:*",
     "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.11",
+    "dotenv-cli": "^7.4.2",
     "eslint": "^9.2.0",
     "prettier": "^3.2.5",
     "tsx": "^4.16.2",
-    "typescript": "^5.4.5",
-    "dotenv-cli": "^7.4.2"
+    "typescript": "^5.4.5"
   },
   "prettier": "@repo/prettier-config"
 }

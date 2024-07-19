@@ -57,10 +57,7 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
           url: `${getBaseUrl()}/api/trpc`,
           headers() {
             const headers = new Map<string, string>();
-            headers.set(
-              "x-trpc-source",
-              String(process.env.AUTH_API_MOBILE_SOURCE),
-            );
+            headers.set("x-client-source", "AUTH_API_MOBILE_SOURCE");
             return Object.fromEntries(headers);
           },
         }),

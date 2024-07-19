@@ -11,12 +11,8 @@ export const createUser = async ({
   role,
 }: z.infer<typeof signupSchema>) => {
   const hashedPassword = await bcrypt.hash(password, 10);
-
-  const [user] = await db
+  await db
     .insert(users)
     .values({ email, role, password: hashedPassword })
-    .onConflictDoNothing()
-    .returning();
-
-  return user;
+    .onConflictDoNothing();
 };
