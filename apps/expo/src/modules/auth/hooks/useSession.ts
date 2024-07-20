@@ -2,43 +2,45 @@ import { useCallback } from "react";
 
 import { useSecureStore } from "~/utils/use-secure-store";
 
-const accessTokenKey = "access_token";
-const refreshTokenKey = "refresh_token";
-
 export interface Session {
+  userId: string;
   accessToken: string;
   refreshToken: string;
 }
 
-export const useSession = () => {
-  const [[isLoadingRefrehsToken, accessToken], setAccessToken] =
-    useSecureStore(accessTokenKey);
-  const [[isLoadingAccessToken, refreshToken], setRefreshToken] =
-    useSecureStore(refreshTokenKey);
+const key = "session";
 
-  const session = {
-    accessToken,
-    refreshToken,
-  };
+function parseSession(sessionString: string | null): Session | null {
+  if (!sessionString) return null;
+  try {
+    return JSON.parse(sessionString) as Session;
+  } catch (error) {
+    console.error("Failed to parse session string:", error);
+    return null;
+  }
+}
 
-  const isLoading = isLoadingRefrehsToken || isLoadingAccessToken;
+function stringifySession(session: Session | null): string | null {
+  return session ? JSON.stringify(session) : null;
+}
+
+export function useSession() {
+  const [secureStoreState, setSecureStoreState] = useSecureStore(key);
+
+  const sessionState: [boolean, Session | null] = [
+    secureStoreState[0],
+    parseSession(secureStoreState[1]),
+  ];
 
   const setSession = useCallback(
-    (val: Session | null, cb?: () => void) => {
-      setAccessToken(val?.accessToken ?? null, () => {
-        setRefreshToken(val?.refreshToken ?? null, () => {
-          cb?.();
-        });
-      });
+    (session: Session | null, callback?: () => void) => {
+      const sessionString = stringifySession(session);
+      setSecureStoreState(sessionString, callback);
     },
-    [setAccessToken, setRefreshToken],
+    [setSecureStoreState],
   );
 
-  const clearSession = useCallback(() => {
-    setAccessToken(null, () => {
-      setRefreshToken(null);
-    });
-  }, [setAccessToken, setRefreshToken]);
+  const [isLoading, session] = sessionState;
 
-  return { isLoading, session, setSession, clearSession };
-};
+  return { setSession, isLoading, session };
+}

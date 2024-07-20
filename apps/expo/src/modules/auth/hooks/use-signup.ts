@@ -4,12 +4,12 @@ import { useMutation } from "@tanstack/react-query";
 
 import type { signupSchema } from "@repo/db/schema";
 
-import { getAuthApiUrl } from "~/utils/get-auth-api-url";
+import { getBaseUrl } from "~/utils/get-base-url";
 
 export const useSignup = () => {
   const mutation = useMutation({
     mutationFn: async (values: z.infer<typeof signupSchema>) => {
-      const response = await fetch(`${getAuthApiUrl()}/signup`, {
+      const response = await fetch(`${getBaseUrl()}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

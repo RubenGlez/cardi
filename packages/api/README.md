@@ -1,3 +1,0 @@
-# `@repo/api`
-
-TRPC api

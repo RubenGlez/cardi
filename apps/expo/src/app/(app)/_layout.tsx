@@ -10,7 +10,7 @@ export default function AppLayout() {
     return <ActivityIndicator />;
   }
 
-  if (!session.accessToken) {
+  if (!session?.accessToken) {
     return <Redirect href="/log-in" />;
   }
 

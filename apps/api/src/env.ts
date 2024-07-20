@@ -14,7 +14,6 @@ const envSchema = z.object({
   AUTH_API_WEB_SOURCE: z.string(),
 });
 
-// eslint-disable-next-line no-restricted-properties
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {

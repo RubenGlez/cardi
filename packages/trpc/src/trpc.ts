@@ -1,15 +1,12 @@
+import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@repo/db/client";
 
-// TODO
-interface Session {
-  accessToken: string;
-  refreshToken: string;
-  userId: string;
-}
+import { env } from "./env";
+import { getSession } from "./helpers/get-session";
 
 /**
  * 1. CONTEXT
@@ -23,18 +20,22 @@ interface Session {
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = (opts: {
-  headers: Headers;
-  session: Session | null;
-}) => {
-  const session = opts.session;
-  const source = opts.headers.get("x-client-source") ?? "unknown";
+export const createTRPCContext = ({
+  req,
+  res,
+}: CreateExpressContextOptions) => {
+  const source = String(req.headers["x-client-source"] ?? "unknown");
+  const isMobile = source === env.AUTH_API_MOBILE_SOURCE;
+  const session = getSession(req, isMobile);
 
-  console.log(">>> tRPC Request from", source, "by", session?.userId);
+  console.log(">>> tRPC Request from", source, "by", session.userId);
 
   return {
-    session,
     db,
+    session,
+    req,
+    res,
+    isMobile,
   };
 };
 
@@ -92,7 +93,7 @@ export const publicProcedure = t.procedure;
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session?.userId) {
+  if (!ctx.session.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({

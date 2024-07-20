@@ -47,7 +47,7 @@
     "@babel/core": "^7.24.5",
     "@babel/preset-env": "^7.24.5",
     "@babel/runtime": "^7.24.5",
-    "@repo/api": "workspace:*",
+    "@repo/trpc": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/prettier-config": "workspace:*",
     "@repo/tailwind-config": "workspace:*",

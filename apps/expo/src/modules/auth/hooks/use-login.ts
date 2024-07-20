@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import type { loginSchema } from "@repo/db/schema";
 
 import type { Session } from "./useSession";
-import { getAuthApiUrl } from "~/utils/get-auth-api-url";
+import { getBaseUrl } from "~/utils/get-base-url";
 import { useSession } from "./useSession";
 
 export const useLogin = () => {
@@ -13,7 +13,7 @@ export const useLogin = () => {
 
   const mutation = useMutation({
     mutationFn: async (values: z.infer<typeof loginSchema>) => {
-      const response = await fetch(`${getAuthApiUrl()}/login`, {
+      const response = await fetch(`${getBaseUrl()}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

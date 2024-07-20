@@ -40,3 +40,7 @@ export const loginSchema = createInsertSchema(users).omit({
   name: true,
   role: true,
 });
+
+export const updateUserSchema = createInsertSchema(users).omit({
+  id: true,
+});

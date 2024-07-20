@@ -1,7 +1,13 @@
+import type { JwtPayload } from "jsonwebtoken";
 import jwt from "jsonwebtoken";
 
-import type { DecodedToken } from "../types/decoded-token";
-import { env } from "../env";
+import { env } from "../../../../apps/api/src/env";
+
+export interface TokenPayload {
+  id: string;
+}
+
+export interface DecodedToken extends JwtPayload, TokenPayload {}
 
 export function decodeAccessToken(token: string) {
   try {

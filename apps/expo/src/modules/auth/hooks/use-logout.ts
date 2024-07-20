@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 
-import { getAuthApiUrl } from "~/utils/get-auth-api-url";
+import { getBaseUrl } from "~/utils/get-base-url";
 import { useSession } from "./useSession";
 
 export const useLogout = () => {
@@ -9,12 +9,12 @@ export const useLogout = () => {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`${getAuthApiUrl()}/logout`, {
+      const response = await fetch(`${getBaseUrl()}/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-client-source": "AUTH_API_MOBILE_SOURCE",
-          "x-refresh-token": String(session.refreshToken),
+          "x-refresh-token": String(session?.refreshToken),
         },
       });
 

@@ -24,6 +24,58 @@ importers:
         specifier: ^5.4.5
         version: 5.5.3
 
+  apps/api:
+    dependencies:
+      '@repo/trpc':
+        specifier: workspace:*
+        version: link:../../packages/trpc
+      cookie-parser:
+        specifier: ^1.4.6
+        version: 1.4.6
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      express:
+        specifier: ^4.19.2
+        version: 4.19.2
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@repo/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@repo/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      '@types/cookie-parser':
+        specifier: ^1.4.7
+        version: 1.4.7
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.17
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+      '@types/node':
+        specifier: ^20.14.11
+        version: 20.14.11
+      dotenv-cli:
+        specifier: ^7.4.2
+        version: 7.4.2
+      eslint:
+        specifier: ^9.2.0
+        version: 9.7.0
+      prettier:
+        specifier: ^3.2.5
+        version: 3.3.3
+      tsx:
+        specifier: ^4.16.2
+        version: 4.16.2
+      typescript:
+        specifier: ^5.4.5
+        version: 5.5.3
+
   apps/expo:
     dependencies:
       '@bacons/text-decoder':
@@ -117,9 +169,6 @@ importers:
       '@babel/runtime':
         specifier: ^7.24.5
         version: 7.24.8
-      '@repo/api':
-        specifier: workspace:*
-        version: link:../../packages/api
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../tooling/eslint
@@ -129,6 +178,9 @@ importers:
       '@repo/tailwind-config':
         specifier: workspace:*
         version: link:../../tooling/tailwind
+      '@repo/trpc':
+        specifier: workspace:*
+        version: link:../../packages/trpc
       '@repo/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/typescript
@@ -153,15 +205,12 @@ importers:
 
   apps/nextjs:
     dependencies:
-      '@repo/api':
-        specifier: workspace:*
-        version: link:../../packages/api
-      '@repo/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
       '@repo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@repo/trpc':
+        specifier: workspace:*
+        version: link:../../packages/trpc
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -236,107 +285,6 @@ importers:
         specifier: ^5.4.5
         version: 5.5.3
 
-  packages/api:
-    dependencies:
-      '@repo/db':
-        specifier: workspace:*
-        version: link:../db
-      '@trpc/server':
-        specifier: 11.0.0-rc.364
-        version: 11.0.0-rc.364
-      superjson:
-        specifier: 2.2.1
-        version: 2.2.1
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
-    devDependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint
-      '@repo/prettier-config':
-        specifier: workspace:*
-        version: link:../../tooling/prettier
-      '@repo/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/typescript
-      eslint:
-        specifier: ^9.2.0
-        version: 9.7.0
-      prettier:
-        specifier: ^3.2.5
-        version: 3.3.3
-      typescript:
-        specifier: ^5.4.5
-        version: 5.5.3
-
-  packages/auth:
-    dependencies:
-      '@repo/db':
-        specifier: workspace:*
-        version: link:../db
-      bcrypt:
-        specifier: ^5.1.1
-        version: 5.1.1
-      cookie-parser:
-        specifier: ^1.4.6
-        version: 1.4.6
-      cors:
-        specifier: ^2.8.5
-        version: 2.8.5
-      express:
-        specifier: ^4.19.2
-        version: 4.19.2
-      jsonwebtoken:
-        specifier: ^9.0.2
-        version: 9.0.2
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
-    devDependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint
-      '@repo/prettier-config':
-        specifier: workspace:*
-        version: link:../../tooling/prettier
-      '@repo/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/typescript
-      '@types/bcrypt':
-        specifier: ^5.0.2
-        version: 5.0.2
-      '@types/cookie-parser':
-        specifier: ^1.4.7
-        version: 1.4.7
-      '@types/cors':
-        specifier: ^2.8.17
-        version: 2.8.17
-      '@types/express':
-        specifier: ^4.17.21
-        version: 4.17.21
-      '@types/jsonwebtoken':
-        specifier: ^9.0.6
-        version: 9.0.6
-      '@types/node':
-        specifier: ^20.14.11
-        version: 20.14.11
-      dotenv-cli:
-        specifier: ^7.4.2
-        version: 7.4.2
-      eslint:
-        specifier: ^9.2.0
-        version: 9.7.0
-      prettier:
-        specifier: ^3.2.5
-        version: 3.3.3
-      tsx:
-        specifier: ^4.16.2
-        version: 4.16.2
-      typescript:
-        specifier: ^5.4.5
-        version: 5.5.3
-
   packages/db:
     dependencies:
       drizzle-orm:
@@ -370,6 +318,52 @@ importers:
       drizzle-kit:
         specifier: ^0.21.4
         version: 0.21.4
+      eslint:
+        specifier: ^9.2.0
+        version: 9.7.0
+      prettier:
+        specifier: ^3.2.5
+        version: 3.3.3
+      typescript:
+        specifier: ^5.4.5
+        version: 5.5.3
+
+  packages/trpc:
+    dependencies:
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../db
+      '@trpc/server':
+        specifier: 11.0.0-rc.364
+        version: 11.0.0-rc.364
+      bcrypt:
+        specifier: ^5.1.1
+        version: 5.1.1
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
+      superjson:
+        specifier: 2.2.1
+        version: 2.2.1
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@repo/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@repo/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      '@types/bcrypt':
+        specifier: ^5.0.2
+        version: 5.0.2
+      '@types/jsonwebtoken':
+        specifier: ^9.0.6
+        version: 9.0.6
       eslint:
         specifier: ^9.2.0
         version: 9.7.0

@@ -1,4 +1,6 @@
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
 
 import type { AppRouter } from "./root";
 import { appRouter } from "./root";
@@ -29,5 +31,10 @@ type RouterInputs = inferRouterInputs<AppRouter>;
  **/
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-export { createTRPCContext, appRouter, createCaller };
-export type { AppRouter, RouterInputs, RouterOutputs };
+export { createTRPCContext, appRouter, createCaller, createExpressMiddleware };
+export type {
+  AppRouter,
+  RouterInputs,
+  RouterOutputs,
+  CreateExpressContextOptions,
+};
